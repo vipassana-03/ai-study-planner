@@ -4,12 +4,15 @@ import datetime as dt
 
 from pydantic import BaseModel, Field, model_validator
 
+from models.availability import BlockType
+
 
 class StudyExceptionBase(BaseModel):
     date: dt.date
     start_time: dt.time
     end_time: dt.time
     reason: str = Field(default="Unavailable", min_length=1)
+    block_type: BlockType = BlockType.protected
 
     @model_validator(mode="after")
     def validate_time_order(self):
@@ -27,6 +30,7 @@ class StudyExceptionUpdate(BaseModel):
     start_time: dt.time | None = None
     end_time: dt.time | None = None
     reason: str | None = Field(default=None, min_length=1)
+    block_type: BlockType | None = None
 
     @model_validator(mode="after")
     def validate_time_order(self):

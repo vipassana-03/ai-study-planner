@@ -2,12 +2,22 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from models.availability import (
+    CalendarEvent,
+    CalendarEventCreate,
+    CalendarEventUpdate,
+    DailyBlock,
+    DailyBlockCreate,
+    DailyBlockUpdate,
+    HolidayCreate,
+)
 from models.exception import (
     StudyException,
     StudyExceptionCreate,
     StudyExceptionUpdate,
 )
 from models.session import (
+    EstimationAccuracyReport,
     ScheduleGenerationResult,
     ScheduledSession,
     SessionActionResult,
@@ -16,12 +26,15 @@ from models.session import (
 )
 from models.task import Task, TaskCreate, TaskUpdate
 from models.timetable import WeeklyTimetable
+from services.availability_service import AvailabilityService
 from services.exception_service import ExceptionService
 from services.rescheduler import ReschedulerService
 from services.scheduler import SchedulerService
 from services.session_service import SessionService
 from services.task_service import TaskService
 from services.timetable_service import TimetableService
+from storage.calendar_event_storage import CalendarEventStorage
+from storage.daily_block_storage import DailyBlockStorage
 from storage.exception_storage import ExceptionStorage
 from storage.schedule_storage import ScheduleStorage
 from storage.session_storage import SessionStorage
@@ -52,6 +65,14 @@ def get_session_storage() -> SessionStorage:
     return SessionStorage()
 
 
+def get_calendar_event_storage() -> CalendarEventStorage:
+    return CalendarEventStorage()
+
+
+def get_daily_block_storage() -> DailyBlockStorage:
+    return DailyBlockStorage()
+
+
 def get_task_service(
     task_storage: TaskStorage = Depends(get_task_storage),
 ) -> TaskService:
@@ -70,12 +91,21 @@ def get_exception_service(
     return ExceptionService(exception_storage)
 
 
+def get_availability_service(
+    calendar_event_storage: CalendarEventStorage = Depends(get_calendar_event_storage),
+    daily_block_storage: DailyBlockStorage = Depends(get_daily_block_storage),
+) -> AvailabilityService:
+    return AvailabilityService(calendar_event_storage, daily_block_storage)
+
+
 def get_scheduler_service(
     task_storage: TaskStorage = Depends(get_task_storage),
     timetable_storage: TimetableStorage = Depends(get_timetable_storage),
     exception_storage: ExceptionStorage = Depends(get_exception_storage),
     schedule_storage: ScheduleStorage = Depends(get_schedule_storage),
     session_storage: SessionStorage = Depends(get_session_storage),
+    calendar_event_storage: CalendarEventStorage = Depends(get_calendar_event_storage),
+    daily_block_storage: DailyBlockStorage = Depends(get_daily_block_storage),
 ) -> SchedulerService:
     return SchedulerService(
         task_storage,
@@ -83,6 +113,8 @@ def get_scheduler_service(
         exception_storage,
         schedule_storage,
         session_storage,
+        calendar_event_storage,
+        daily_block_storage,
     )
 
 
@@ -234,6 +266,133 @@ def get_exceptions(
     return exception_service.get_exceptions()
 
 
+@router.post(
+    "/calendar/events",
+    response_model=CalendarEvent,
+    status_code=status.HTTP_201_CREATED,
+)
+def add_calendar_event(
+    event_create: CalendarEventCreate,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        return availability_service.add_calendar_event(event_create)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.post(
+    "/calendar/holidays",
+    response_model=CalendarEvent,
+    status_code=status.HTTP_201_CREATED,
+)
+def add_holiday(
+    holiday_create: HolidayCreate,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        return availability_service.add_holiday(holiday_create)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.get("/calendar/events", response_model=list[CalendarEvent])
+def get_calendar_events(
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    return availability_service.get_calendar_events()
+
+
+@router.get("/calendar/events/{event_id}", response_model=CalendarEvent)
+def get_calendar_event_by_id(
+    event_id: str,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        return availability_service.get_calendar_event_by_id(event_id)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.put("/calendar/events/{event_id}", response_model=CalendarEvent)
+def update_calendar_event(
+    event_id: str,
+    event_update: CalendarEventUpdate,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        return availability_service.update_calendar_event(event_id, event_update)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.delete("/calendar/events/{event_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_calendar_event(
+    event_id: str,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        availability_service.delete_calendar_event(event_id)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.post(
+    "/daily-blocks",
+    response_model=DailyBlock,
+    status_code=status.HTTP_201_CREATED,
+)
+def add_daily_block(
+    block_create: DailyBlockCreate,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        return availability_service.add_daily_block(block_create)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.get("/daily-blocks", response_model=list[DailyBlock])
+def get_daily_blocks(
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    return availability_service.get_daily_blocks()
+
+
+@router.get("/daily-blocks/{block_id}", response_model=DailyBlock)
+def get_daily_block_by_id(
+    block_id: str,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        return availability_service.get_daily_block_by_id(block_id)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.put("/daily-blocks/{block_id}", response_model=DailyBlock)
+def update_daily_block(
+    block_id: str,
+    block_update: DailyBlockUpdate,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        return availability_service.update_daily_block(block_id, block_update)
+    except Exception as error:
+        raise_http_error(error)
+
+
+@router.delete("/daily-blocks/{block_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_daily_block(
+    block_id: str,
+    availability_service: AvailabilityService = Depends(get_availability_service),
+):
+    try:
+        availability_service.delete_daily_block(block_id)
+    except Exception as error:
+        raise_http_error(error)
+
+
 @router.post("/schedule/generate", response_model=ScheduleGenerationResult)
 def generate_schedule(
     scheduler_service: SchedulerService = Depends(get_scheduler_service),
@@ -303,3 +462,10 @@ def get_session_history(
     session_service: SessionService = Depends(get_session_service),
 ):
     return session_service.get_session_history()
+
+
+@router.get("/sessions/accuracy", response_model=EstimationAccuracyReport)
+def get_estimation_accuracy(
+    session_service: SessionService = Depends(get_session_service),
+):
+    return session_service.get_estimation_accuracy()

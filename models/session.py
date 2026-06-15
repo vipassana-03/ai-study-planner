@@ -21,6 +21,11 @@ class CompletionType(str, Enum):
     skipped = "skipped"
 
 
+class ScheduleSlotType(str, Enum):
+    free = "free"
+    flexible = "flexible"
+
+
 class ScheduledSession(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
@@ -33,6 +38,8 @@ class ScheduledSession(BaseModel):
     end_time: dt.time
     planned_hours: float = Field(..., gt=0)
     status: ScheduledSessionStatus = ScheduledSessionStatus.scheduled
+    slot_type: ScheduleSlotType = ScheduleSlotType.free
+    sacrificed_items: list[str] = Field(default_factory=list)
 
 
 class SessionCompletionRequest(BaseModel):
@@ -56,6 +63,14 @@ class SessionHistoryEntry(BaseModel):
     estimation_error_hours: float
     estimation_accuracy: float = Field(..., ge=0, le=1)
     recorded_at: dt.datetime = Field(default_factory=dt.datetime.utcnow)
+
+
+class EstimationAccuracyReport(BaseModel):
+    sessions_recorded: int
+    planned_hours: float
+    actual_hours: float
+    average_estimation_accuracy: float
+    total_estimation_error_hours: float
 
 
 class ScheduleWarning(BaseModel):

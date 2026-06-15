@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from datetime import datetime, time, timedelta
 from uuid import uuid4
 
 from models.session import (
     CompletionType,
+    EstimationAccuracyReport,
     ScheduledSession,
     SessionActionResult,
     SessionCompletionRequest,
@@ -89,6 +91,32 @@ class SessionService:
     def get_session_history(self) -> list[SessionHistoryEntry]:
         return self.session_storage.get_all()
 
+    def get_estimation_accuracy(self) -> EstimationAccuracyReport:
+        entries = self.session_storage.get_all()
+        if not entries:
+            return EstimationAccuracyReport(
+                sessions_recorded=0,
+                planned_hours=0,
+                actual_hours=0,
+                average_estimation_accuracy=0,
+                total_estimation_error_hours=0,
+            )
+
+        planned_hours = round(sum(entry.planned_hours for entry in entries), 2)
+        actual_hours = round(sum(entry.actual_hours for entry in entries), 2)
+        average_accuracy = round(
+            sum(entry.estimation_accuracy for entry in entries) / len(entries),
+            4,
+        )
+
+        return EstimationAccuracyReport(
+            sessions_recorded=len(entries),
+            planned_hours=planned_hours,
+            actual_hours=actual_hours,
+            average_estimation_accuracy=average_accuracy,
+            total_estimation_error_hours=round(actual_hours - planned_hours, 2),
+        )
+
     def _apply_session_result(
         self,
         session: ScheduledSession,
@@ -137,10 +165,24 @@ class SessionService:
             subject=session.subject,
             date=session.date,
             start_time=session.start_time,
-            end_time=session.end_time,
+            end_time=self._actual_end_time(session, actual_hours),
             planned_hours=session.planned_hours,
             actual_hours=round(actual_hours, 2),
             completion_type=completion_type,
             estimation_error_hours=estimation_error,
             estimation_accuracy=estimation_accuracy,
         )
+
+    def _actual_end_time(
+        self,
+        session: ScheduledSession,
+        actual_hours: float,
+    ) -> time:
+        if actual_hours <= 0:
+            return session.start_time
+
+        start_datetime = datetime.combine(session.date, session.start_time)
+        end_datetime = start_datetime + timedelta(hours=actual_hours)
+        if end_datetime.date() != session.date:
+            return time.max
+        return end_datetime.time().replace(second=0, microsecond=0)

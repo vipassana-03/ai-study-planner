@@ -1,0 +1,18 @@
+[
+    {
+        "id": "86afb5da-94fb-458f-b7fd-a2ada485cc5b",
+        "session_id": "87d08793-cf5f-4f32-ab64-ddea89230320",
+        "task_id": "b50f891c-83b3-4bb2-bc58-dce2837291da",
+        "task_name": "Chemistry Revision",
+        "subject": "Chemistry",
+        "date": "2026-06-15",
+        "start_time": "09:00:00",
+        "end_time": "10:30:00",
+        "planned_hours": 1.0,
+        "actual_hours": 1.5,
+        "completion_type": "late",
+        "estimation_error_hours": 0.5,
+        "estimation_accuracy": 0.5,
+        "recorded_at": "2026-06-15T07:32:52.340905"
+    }
+]

@@ -1,0 +1,17 @@
+[
+    {
+        "id": "aa208d27-7a1e-4076-8779-a136b5086ac7",
+        "task_id": "b50f891c-83b3-4bb2-bc58-dce2837291da",
+        "task_name": "Chemistry Revision",
+        "subject": "Chemistry",
+        "date": "2026-06-15",
+        "start_time": "11:00:00",
+        "end_time": "11:30:00",
+        "planned_hours": 0.5,
+        "status": "scheduled",
+        "slot_type": "flexible",
+        "sacrificed_items": [
+            "Daily block: Travel"
+        ]
+    }
+]

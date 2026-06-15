@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Lunch",
+        "category": "lunch",
+        "start_time": "10:00:00",
+        "end_time": "11:00:00",
+        "block_type": "protected",
+        "active_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+        ],
+        "enabled": true,
+        "id": "f45d270f-6c34-4169-af86-89f3859b389f",
+        "created_at": "2026-06-15T07:32:52.208070",
+        "updated_at": "2026-06-15T07:32:52.208075"
+    },
+    {
+        "name": "Travel",
+        "category": "travel",
+        "start_time": "11:00:00",
+        "end_time": "12:00:00",
+        "block_type": "flexible",
+        "active_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+        ],
+        "enabled": true,
+        "id": "0495477c-6fc5-4d6f-a93e-d4683e5084f9",
+        "created_at": "2026-06-15T07:32:52.237824",
+        "updated_at": "2026-06-15T07:32:52.237828"
+    }
+]
