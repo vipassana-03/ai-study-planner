@@ -1,0 +1,18 @@
+[
+    {
+        "id": "e91619d5-00ea-49ff-87eb-6bb6ce08fac3",
+        "session_id": "ea17a344-3c06-4992-9aae-9add62d30e91",
+        "task_id": "704f4199-2b3c-40cf-b976-49dd4bc6c8a8",
+        "task_name": "Physics Assignment",
+        "subject": "Physics",
+        "date": "2026-06-15",
+        "start_time": "09:00:00",
+        "end_time": "11:00:00",
+        "planned_hours": 2.0,
+        "actual_hours": 1.0,
+        "completion_type": "early",
+        "estimation_error_hours": -1.0,
+        "estimation_accuracy": 0.5,
+        "recorded_at": "2026-06-15T06:42:31.661776"
+    }
+]

@@ -1,0 +1,13 @@
+[
+    {
+        "name": "Physics Assignment",
+        "subject": "Physics",
+        "due_date": "2026-06-20",
+        "hours_needed": 4.0,
+        "id": "704f4199-2b3c-40cf-b976-49dd4bc6c8a8",
+        "hours_completed": 1.0,
+        "status": "in_progress",
+        "created_at": "2026-06-15T06:42:31.600852",
+        "updated_at": "2026-06-15T06:42:31.661117"
+    }
+]

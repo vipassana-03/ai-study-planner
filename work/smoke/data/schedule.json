@@ -1,0 +1,24 @@
+[
+    {
+        "id": "76eb49aa-65d9-45e0-a91a-91cb480cc7ae",
+        "task_id": "704f4199-2b3c-40cf-b976-49dd4bc6c8a8",
+        "task_name": "Physics Assignment",
+        "subject": "Physics",
+        "date": "2026-06-16",
+        "start_time": "09:00:00",
+        "end_time": "11:00:00",
+        "planned_hours": 2.0,
+        "status": "scheduled"
+    },
+    {
+        "id": "1343537a-af95-4ef6-8c23-1d7ff795bfdb",
+        "task_id": "704f4199-2b3c-40cf-b976-49dd4bc6c8a8",
+        "task_name": "Physics Assignment",
+        "subject": "Physics",
+        "date": "2026-06-17",
+        "start_time": "09:00:00",
+        "end_time": "10:00:00",
+        "planned_hours": 1.0,
+        "status": "scheduled"
+    }
+]

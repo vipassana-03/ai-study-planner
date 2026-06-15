@@ -1,0 +1,13 @@
+[
+    {
+        "id": "d8a3ce62-4864-4f7f-8851-f563b38ba0bf",
+        "task_id": "706c0dc6-7141-42b5-8f20-9ff8fbd126fc",
+        "task_name": "Physics Assignment",
+        "subject": "Physics",
+        "date": "2026-06-15",
+        "start_time": "18:00:00",
+        "end_time": "20:00:00",
+        "planned_hours": 2.0,
+        "status": "scheduled"
+    }
+]
